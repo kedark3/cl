@@ -1,0 +1,144 @@
+/*Name: Gauri Somavanshi
+Roll no: B4259
+Class: B.E Comp (B)
+*/
+
+/*Problem Statement:
+		Write a program to change case of given input (Upper, Lower, Sentence,Toggle)
+
+*/
+
+
+%{
+#include<stdio.h>
+int ch; int flag=0; char c;
+FILE *f1,*f2;
+%}
+lower [a-zA-Z]|(\ )|\.
+%%
+{lower} {switch(ch)
+		{	case 1:
+				c=toupper(yytext[0]);
+				printf("%c",c);
+				fprintf(f2,"%c",c);
+				break;
+			case 2:
+				c=tolower(yytext[0]);
+				printf("%c",c);
+				fprintf(f2,"%c",c);
+				break;
+			case 3:
+				if(yytext[0] >= 'a' && yytext[0] <= 'z')
+				{
+					c=toupper(yytext[0]);
+				}	
+				else if(yytext[0] >= 'A' && yytext[0] <= 'Z')
+				{
+					c=tolower(yytext[0]);
+				}
+				else
+				{
+					c=yytext[0];
+				}
+					printf("%c",c);
+					fprintf(f2,"%c",c);
+				break;
+			case 4:
+				if(yytext[0]=='.')
+				{
+					flag=0;
+					c=yytext[0];
+					printf("%c",c);
+					fprintf(f2,"%c",c);
+					break;
+				}
+				if(flag==0 && yytext[0] != ' ')
+				{
+					c=toupper(yytext[0]);
+					flag=1;
+				}
+				else
+				{
+					c=tolower(yytext[0]);
+				}
+				printf("%c",c);
+				fprintf(f2,"%c",c);
+				break;
+		}
+		}
+%%
+void main()
+{
+	f1=fopen("A.C","r");
+	f2=fopen("B.C","w");
+	do
+	{	f1=fopen("A.C","r");		
+		yyin=f1;
+		printf("\n1. TO UPPER\n2. TO LOWER\n3. TOGGLE\n4. SENTENCE");
+		printf("\nEnter your choice :: ");
+		scanf("%d",&ch);
+		yylex();
+	}while(ch!=5);
+}
+
+
+INPUT FILE:   A.c
+
+#include<stdio.h>
+void main()
+{
+printf("MiTcOe PuNe");
+}
+
+
+OUTPUT:
+
+ccompl04-27@ccompl0427:~/Desktop$ lex lex5.l
+ccompl04-27@ccompl0427:~/Desktop$ cc lex.yy.c -ll
+ccompl04-27@ccompl0427:~/Desktop$ ./a.out
+
+1. TO UPPER
+2. TO LOWER
+3. TOGGLE
+4. SENTENCE
+Enter your choice :: 1
+#INCLUDE<STDIO.H>
+VOID MAIN()
+{
+PRINTF("MITCOE PUNE");
+}
+
+1. TO UPPER
+2. TO LOWER
+3. TOGGLE
+4. SENTENCE
+Enter your choice :: 2
+#include<stdio.h>
+void main()
+{
+printf("mitcoe pune");
+}
+
+1. TO UPPER
+2. TO LOWER
+3. TOGGLE
+4. SENTENCE
+Enter your choice :: 3
+#INCLUDE<STDIO.H>
+VOID MAIN()
+{
+PRINTF("mItCoE pUnE");
+}
+
+1. TO UPPER
+2. TO LOWER
+3. TOGGLE
+4. SENTENCE
+Enter your choice :: 4
+#Include<stdio.H>
+void main()
+{
+printf("mitcoe pune");
+}
+
+
