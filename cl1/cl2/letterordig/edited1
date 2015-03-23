@@ -1,0 +1,44 @@
+/*Name: Gauri Somavanshi
+Roll no: B4259
+Class: B.E Comp (B)
+*/
+
+/*Problem Statement:
+			Write a program to find out whether given input is a letter or digit.
+*/
+
+
+%{
+#include<stdio.h>
+%}
+%%
+[a-z A-Z]+  {printf("\n%s= character\n",(char *)yytext);}
+[0-9]+ {printf("\n%s= digit..\n",(char *)yytext);}
+%%
+main()
+{
+FILE *fp;
+fp=fopen("input14.txt","r");
+yyin=fp;
+yylex();
+}
+
+/*
+INPUT FILE:   input14.txt
+
+123454
+abc
+
+OUTPUT:
+
+ccompl04-27@ccompl0427:~$ cd Desktop
+ccompl04-27@ccompl0427:~/Desktop$ lex lex1.l
+ccompl04-27@ccompl0427:~/Desktop$ cc lex.yy.c -ll
+ccompl04-27@ccompl0427:~/Desktop$ ./a.out
+
+123454= digit..
+
+
+abc= character
+
+*/
