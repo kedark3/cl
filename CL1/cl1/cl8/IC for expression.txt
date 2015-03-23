@@ -1,0 +1,233 @@
+AIM: To generate IC for an expression
+Class:BE COMP B
+ROLL NO.:B4240
+NAME: Devika Pisharoty
+
+LEX FILE:
+%{
+#include <ctype.h>
+%}
+
+DIGIT [0-9]+
+LETTER [a-zA-Z]+
+%%
+{DIGIT} {yylval.p=(char)yytext[0];return DIGIT;}
+
+{LETTER} {yylval.p=(char)yytext[0];return LETTER;}
+. {return yytext[0];}
+\n {return 0;}
+%%
+
+
+
+YACC FILE:
+
+%{
+#include <stdio.h>
+#include<string.h>
+
+ struct icode
+ {
+ char op1;
+ char op2;
+ char opr;
+ char temp;
+ }code[10];
+
+int index1=0;
+%}
+
+%union 
+{
+ char p;
+}
+
+%token<p> DIGIT,LETTER
+%type<p> expr
+%type<p> stat
+%left '+' '-'
+%right '*' '/'
+
+
+%%
+
+stat: LETTER'='expr';' {AddToTable((char)$1,(char)$3,'=');}
+     |expr';'
+     ;
+
+expr:expr'+'expr {$$=AddToTable((char)$1,(char)$3,'+');}
+    |expr'-'expr {$$=AddToTable((char)$1,(char)$3,'-');}
+    |expr'*'expr {$$=AddToTable((char)$1,(char)$3,'*');}
+    |expr'/'expr {$$=AddToTable((char)$1,(char)$3,'/');}
+    |'('expr')' {$$=(char)$2;}
+    |DIGIT {$$=(char)$1;}
+    |LETTER {$$=(char)$1;}
+    ;
+%%
+
+
+char temp ='A';
+char AddToTable(char op1,char op2,char opr)
+{
+ code[index1].op1=op1;
+ code[index1].op2=op2;
+ code[index1].opr=opr;
+ index1++;
+ temp++;
+ return temp;
+}
+
+void print_tac()
+{
+ int cnt=0;
+ char temp='A';
+ temp++;
+printf("\n\n\tTHREE ADDRESS CODE\n\n");
+ while(cnt<index1)
+ {
+  printf("%c:=\t",temp);
+ if(isalpha(code[cnt].op1))
+  printf("%c\t",code[cnt].op1);
+ else
+printf("%c\t",temp);
+ printf("%c\t",code[cnt].opr);
+ 
+ if(isalpha(code[cnt].op2))
+  printf("%c\t",code[cnt].op2);
+ else
+printf("%c\t",temp);
+ 
+printf("\n");
+cnt++;
+temp++;
+
+ } 
+}
+
+void print_quadruple()
+{
+ int cnt=0;
+ char temp='A';
+ printf("\n \t \t \t \t");
+ temp++;
+ printf("\n\n\tQUADRUPLE\n");
+ printf("\nID  ARG1  ARG2  OP  RESULT\n"); 
+while(cnt<index1)
+ {
+  printf("\n(%d)\t",cnt); 
+ 
+ if(isalpha(code[cnt].op1))
+  printf("%c\t",code[cnt].op1);
+ else
+printf("%c\t",temp);
+ 
+ 
+ if(isalpha(code[cnt].op2))
+  printf("%c\t",code[cnt].op2);
+ else
+printf("%c\t",temp);
+ 
+printf("%c\t",code[cnt].opr);
+printf("%c\t",temp);
+
+cnt++;
+temp++;
+}
+
+}
+
+
+void print_triple()
+{
+ int cnt=0;
+ printf("\n\nTRIPLES\n");
+ printf("\nArg1  Arg2  Op\n");
+ while(cnt<index1)
+ {
+  
+   if(isalpha(code[cnt].op1) && isupper(code[cnt].op1))
+ printf("%d\t",(cnt-1));
+  else if(isalpha(code[cnt].op1))
+ printf("%c\t",code[cnt].op1);
+ else
+ printf("%c\t",temp);
+
+  
+   if(isalpha(code[cnt].op2) && isupper(code[cnt].op2))
+ printf("%d\t",(cnt-1));
+  else if(isalpha(code[cnt].op2))
+ printf("%c\t",code[cnt].op2);
+ else
+ printf("%c\t",temp);
+printf("%c\t",code[cnt].opr);
+printf("\n");
+ cnt++;
+}
+
+}
+
+
+#include "lex.yy.c"
+
+
+
+void yyerror(char *s)
+{
+ printf("%s",s);
+ exit(0);
+}
+
+yywrap()
+{
+ return 1;
+}
+
+main()
+{
+ printf("\nEnter the expression:\t");
+ yyparse();
+ print_tac();
+ print_quadruple();
+ print_triple();
+}
+ 
+
+
+OUTPUT:
+comp154@comp154:~$ lex l7.l
+comp154@comp154:~$ yacc -d  imd1.y
+comp154@comp154:~$ cc lex.yy.c y.tab.c -ll
+comp154@comp154:~$ ./a.out
+
+Enter the expression:	A=b+c-d*e;
+
+
+	THREE ADDRESS CODE
+
+B:=	b	+	c	
+C:=	d	*	e	
+D:=	B	-	C	
+E:=	A	=	D	
+
+ 	 	 	 	
+
+	QUADRUPLE
+
+ID  ARG1  ARG2  OP  RESULT
+
+(0)	b	c	+	B	
+(1)	d	e	*	C	
+(2)	B	C	-	D	
+(3)	A	D	=	E	
+
+
+
+TRIPLES
+
+Arg1  Arg2  Op
+b	c	+	
+d	e	*	
+1	1	-	
+2	2	=	
+
+
