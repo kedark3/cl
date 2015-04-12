@@ -1,62 +1,65 @@
 #include<stdio.h>
 
-int max1(int a, int b)    //to find the maximum timestamp between two events
+void main()
 {
-if (a>b)
-        return a;
-else
-	return b;
-}
- 
-int main()
-{
-	int i,j,k,p1[20],p2[20],e1,e2,dep[20][20];
-	printf("enter the events : ");
+	int t1[20],t2[20],i,j,k,dep[20][20],e1,e2;
+	
+	printf("\nEnter no. of events on both machines:\t");
 	scanf("%d %d",&e1,&e2);
-
+	
+	printf("\nEnter Timestamp for events on m1:\n");
 	for(i=0;i<e1;i++)
-		p1[i]=i+1;
+		scanf("%d",&t1[i]);
+	printf("\nEnter Timestamp for events on m2:\n");
 	for(i=0;i<e2;i++)
-		p2[i]=i+1;
-
-	printf("enter the dependency matrix:\n");
-	printf("\t enter 1 if e1->e2 \n\t enter -1, if e2->e1 \n\t else enter 0 \n\n");
+		scanf("%d",&t2[i]);
+	
+	printf("\nEnter dependency matrix:");
+	printf("\ne1->e2 = 1 \ne2->e1 = -1 \n else 0");
+	printf("\n");
+	
 	for(i=0;i<e2;i++)
-		printf("\te2%d",i+1);
+		printf("\te2%d", i+1);
 	for(i=0;i<e1;i++)
 	{
 		printf("\n e1%d \t",i+1);
 		for(j=0;j<e2;j++)
 			scanf("%d",&dep[i][j]);
-	}	
- 
+	}
+	
 	for(i=0;i<e1;i++)
-	{	
+	{
 		for(j=0;j<e2;j++)
 		{
-			if(dep[i][j]==1)     //change the timestamp if dependency exist
-			{	
-				p2[j]=max1(p2[j],p1[i]+1);
-				for(k=j;k<e2;k++)
-					p2[k+1]=p2[k]+1;
-			}
-			if(dep[i][j]==-1)    //change the timestamp if dependency exist
+			if(dep[i][j]==1)
 			{
-				p1[i]=max1(p1[i],p2[j]+1);
-				for(k=i;k<e1;k++)
-				p2[k+1]=p1[k]+1;
+				if(t2[j]<t1[i])
+				{
+					t2[j]=t1[i]+1;
+					for(k=j+1;k<e2;k++)
+					{
+						t2[k]+=1;
+					}
+				}
 			}
- 
+			else if(dep[i][j]==-1)
+			{
+				if(t1[i]<t2[j])
+				{
+					t1[i]=t2[j]+1;
+					for(k=i+1;k<e1;k++)
+						t1[k]+=1;
+				}
+			}
 		}
 	}
 	printf("P1 : ");     //to print the outcome of Lamport Logical Clock
 	for(i=0;i<e1;i++)
-		printf("%d\t",p1[i]);
+		printf("%d\t",t1[i]);
 
 	printf("\n P2 : ");
 	for(j=0;j<e2;j++)
-		printf("%d\t",p2[j]);
+		printf("%d\t",t2[j]);
  
-	return 0 ;
 }
 
